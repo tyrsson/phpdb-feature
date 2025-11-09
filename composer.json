@@ -1,0 +1,69 @@
+{
+    "name": "webware/phpdb-feature",
+    "description": "PhpDb Custom Features",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "mezzio",
+        "php-db"
+    ],
+    "homepage": "https://github.com/tyrsson/phpdb-feature/discussions",
+    "support": {
+        "issues": "https://github.com/tyrsson/phpdb-feature/issues",
+        "source": "https://github.com/tyrsson/phpdb-feature",
+        "forum": "https://github.com/tyrsson/phpdb-feature/discussions"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "8.2.99"
+        },
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "extra": {
+        "laminas": {
+            "config-provider": "Webware\\Feature\\ConfigProvider"
+        }
+    },
+    "require": {
+        "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+        "webware/mezzio-eventdispatcher": "^0.1.0"
+    },
+    "require-dev": {
+        "laminas/laminas-coding-standard": "^3.0.1",
+        "php-db/phpdb": "^0.3.0",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^11.5.42"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webware\\Feature\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "WebwareTest\\Feature\\": "test/unit/",
+            "WebwareIntegrationTest\\Feature\\": "test/integration/"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@static-analysis",
+            "@test",
+            "@test-integration"
+        ],
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "phpunit --colors=always --testsuite \"unit test\"",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+        "test-integration": "phpunit --colors=always --testsuite \"integration test\"",
+        "static-analysis": "vendor/bin/phpstan analyse --memory-limit=256M",
+        "sa-generate-baseline": "vendor/bin/phpstan analyse --memory-limit=256M --generate-baseline",
+        "upload-coverage": "coveralls -v"
+    }
+}
