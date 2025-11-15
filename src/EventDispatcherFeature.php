@@ -12,205 +12,187 @@ use PhpDb\Sql\Insert;
 use PhpDb\Sql\Select;
 use PhpDb\Sql\Update;
 use PhpDb\TableGateway\Feature\AbstractFeature;
-use PhpDb\TableGateway\TableGateway;
+use PhpDb\TableGateway\Feature\EventFeatureEventsInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Webware\Feature\EventDispatcher\Event;
 
-use function get_class;
-
-class EventDispatcherFeature extends AbstractFeature
+class EventDispatcherFeature extends AbstractFeature implements EventFeatureEventsInterface
 {
     public function __construct(
-        private ?EventDispatcherInterface $eventDispatcher = null,
+        private ?EventDispatcherInterface $eventDispatcher,
         private ?EventDispatcher\TableGatewayEvent $tableGatewayEvent = new EventDispatcher\TableGatewayEvent()
     ) {
     }
 
     /**
      * Retrieve composed event dispatcher instance
-     *
-     * @return EventDispatcherInterface
      */
-    public function getEventDispatcher()
+    public function getEventDispatcher(): ?EventDispatcherInterface
     {
         return $this->eventDispatcher;
     }
 
     /**
      * Retrieve composed event instance
-     *
-     * @return EventFeature\TableGatewayEvent
      */
-    public function getEvent()
+    public function getEvent(): EventDispatcher\TableGatewayEvent
     {
-        return $this->event;
+        return $this->tableGatewayEvent;
     }
 
     /**
-     * Initialize feature and trigger "preInitialize" event
+     * Initialize feature and dispatch "preInitialize" event
      *
      * Ensures that the composed TableGateway has identifiers based on the
      * class name, and that the event target is set to the TableGateway
      * instance. It then triggers the "preInitialize" event.
-     *
-     * @return void
      */
-    public function preInitialize()
+    public function preInitialize(): void
     {
-        if (get_class($this->tableGateway) !== TableGateway::class) {
-            $this->eventManager->addIdentifiers([get_class($this->tableGateway)]);
-        }
-
-        $this->event->setTarget($this->tableGateway);
-        $this->event->setName(static::EVENT_PRE_INITIALIZE);
-        $this->eventManager->triggerEvent($this->event);
+        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setTarget($this->tableGateway);
+        $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
 
     /**
-     * Trigger the "postInitialize" event
-     *
-     * @return void
+     * Dispatch the "postInitialize" event
      */
-    public function postInitialize()
+    public function postInitialize(): void
     {
-        $this->event->setName(static::EVENT_POST_INITIALIZE);
-        $this->eventManager->triggerEvent($this->event);
+        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
 
     /**
-     * Trigger the "preSelect" event
+     * Dispatch the "preSelect" event
      *
-     * Triggers the "preSelect" event mapping the following parameters:
+     * Dispatches the "preSelect" event mapping the following parameters:
      * - $select as "select"
      *
      * @return void
      */
-    public function preSelect(Select $select)
+    public function preSelect(Select $select): void
     {
-        $this->event->setName(static::EVENT_PRE_SELECT);
-        $this->event->setParams(['select' => $select]);
-        $this->eventManager->triggerEvent($this->event);
+        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setParams(['select' => $select]);
+        $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
 
     /**
-     * Trigger the "postSelect" event
+     * Dispatch the "postSelect" event
      *
-     * Triggers the "postSelect" event mapping the following parameters:
+     * Dispatches the "postSelect" event mapping the following parameters:
      * - $statement as "statement"
      * - $result as "result"
      * - $resultSet as "result_set"
-     *
-     * @return void
      */
-    public function postSelect(StatementInterface $statement, ResultInterface $result, ResultSetInterface $resultSet)
-    {
-        $this->event->setName(static::EVENT_POST_SELECT);
-        $this->event->setParams([
+    public function postSelect(
+        StatementInterface $statement,
+        ResultInterface $result,
+        ResultSetInterface $resultSet
+    ): void {
+        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setParams([
             'statement'  => $statement,
             'result'     => $result,
             'result_set' => $resultSet,
         ]);
-        $this->eventManager->triggerEvent($this->event);
+        $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
 
     /**
-     * Trigger the "preInsert" event
+     * Dispatch the "preInsert" event
      *
-     * Triggers the "preInsert" event mapping the following parameters:
+     * Dispatches the "preInsert" event mapping the following parameters:
      * - $insert as "insert"
-     *
-     * @return void
      */
-    public function preInsert(Insert $insert)
+    public function preInsert(Insert $insert): void
     {
-        $this->event->setName(static::EVENT_PRE_INSERT);
-        $this->event->setParams(['insert' => $insert]);
-        $this->eventManager->triggerEvent($this->event);
+        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setParams(['insert' => $insert]);
+        $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
 
     /**
-     * Trigger the "postInsert" event
+     * Dispatch the "postInsert" event
      *
-     * Triggers the "postInsert" event mapping the following parameters:
+     * Dispatches the "postInsert" event mapping the following parameters:
      * - $statement as "statement"
      * - $result as "result"
-     *
-     * @return void
      */
-    public function postInsert(StatementInterface $statement, ResultInterface $result)
-    {
-        $this->event->setName(static::EVENT_POST_INSERT);
-        $this->event->setParams([
+    public function postInsert(
+        StatementInterface $statement,
+        ResultInterface $result
+    ): void {
+        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setParams([
             'statement' => $statement,
             'result'    => $result,
         ]);
-        $this->eventManager->triggerEvent($this->event);
+        $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
 
     /**
-     * Trigger the "preUpdate" event
+     * Dispatch the "preUpdate" event
      *
-     * Triggers the "preUpdate" event mapping the following parameters:
+     * Dispatches the "preUpdate" event mapping the following parameters:
      * - $update as "update"
-     *
-     * @return void
      */
-    public function preUpdate(Update $update)
+    public function preUpdate(Update $update): void
     {
-        $this->event->setName(static::EVENT_PRE_UPDATE);
-        $this->event->setParams(['update' => $update]);
-        $this->eventManager->triggerEvent($this->event);
+        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setParams(['update' => $update]);
+        $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
 
     /**
-     * Trigger the "postUpdate" event
+     * Dispatch the "postUpdate" event
      *
-     * Triggers the "postUpdate" event mapping the following parameters:
+     * Dispatches the "postUpdate" event mapping the following parameters:
      * - $statement as "statement"
      * - $result as "result"
-     *
-     * @return void
      */
-    public function postUpdate(StatementInterface $statement, ResultInterface $result)
-    {
-        $this->event->setName(static::EVENT_POST_UPDATE);
-        $this->event->setParams([
+    public function postUpdate(
+        StatementInterface $statement,
+        ResultInterface $result
+    ): void {
+        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setParams([
             'statement' => $statement,
             'result'    => $result,
         ]);
-        $this->eventManager->triggerEvent($this->event);
+        $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
 
     /**
-     * Trigger the "preDelete" event
+     * Dispatch the "preDelete" event
      *
-     * Triggers the "preDelete" event mapping the following parameters:
+     * Dispatches the "preDelete" event mapping the following parameters:
      * - $delete as "delete"
-     *
-     * @return void
      */
-    public function preDelete(Delete $delete)
+    public function preDelete(Delete $delete): void
     {
-        $this->event->setName(static::EVENT_PRE_DELETE);
-        $this->event->setParams(['delete' => $delete]);
-        $this->eventManager->triggerEvent($this->event);
+        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setParams(['delete' => $delete]);
+        $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
 
     /**
-     * Trigger the "postDelete" event
+     * Dispatch the "postDelete" event
      *
-     * Triggers the "postDelete" event mapping the following parameters:
+     * Dispatches the "postDelete" event mapping the following parameters:
      * - $statement as "statement"
      * - $result as "result"
-     *
-     * @return void
      */
-    public function postDelete(StatementInterface $statement, ResultInterface $result)
-    {
-        $this->event->setName(static::EVENT_POST_DELETE);
-        $this->event->setParams([
+    public function postDelete(
+        StatementInterface $statement,
+        ResultInterface $result
+    ): void {
+        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setParams([
             'statement' => $statement,
             'result'    => $result,
         ]);
-        $this->eventManager->triggerEvent($this->event);
+        $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
 }

@@ -27,10 +27,8 @@ final class ConfigProvider
     {
         return [
             'aliases' => [
-                FeatureManager::class => FeatureManagerFactory::class,
             ],
             'factories' => [
-                FeatureManagerFactory::class => FeatureManagerFactory::class,
             ],
         ];
     }
