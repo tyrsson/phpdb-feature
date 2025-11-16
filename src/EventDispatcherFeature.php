@@ -49,7 +49,7 @@ class EventDispatcherFeature extends AbstractFeature implements EventFeatureEven
      */
     public function preInitialize(): void
     {
-        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setEvent(Event::PreInitialize);
         $this->tableGatewayEvent->setTarget($this->tableGateway);
         $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
@@ -59,7 +59,7 @@ class EventDispatcherFeature extends AbstractFeature implements EventFeatureEven
      */
     public function postInitialize(): void
     {
-        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setEvent(Event::PostInitialize);
         $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
 
@@ -73,7 +73,7 @@ class EventDispatcherFeature extends AbstractFeature implements EventFeatureEven
      */
     public function preSelect(Select $select): void
     {
-        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setEvent(Event::PreSelect);
         $this->tableGatewayEvent->setParams(['select' => $select]);
         $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
@@ -91,7 +91,7 @@ class EventDispatcherFeature extends AbstractFeature implements EventFeatureEven
         ResultInterface $result,
         ResultSetInterface $resultSet
     ): void {
-        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setEvent(Event::PostSelect);
         $this->tableGatewayEvent->setParams([
             'statement'  => $statement,
             'result'     => $result,
@@ -108,7 +108,7 @@ class EventDispatcherFeature extends AbstractFeature implements EventFeatureEven
      */
     public function preInsert(Insert $insert): void
     {
-        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setEvent(Event::PreInsert);
         $this->tableGatewayEvent->setParams(['insert' => $insert]);
         $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
@@ -124,7 +124,7 @@ class EventDispatcherFeature extends AbstractFeature implements EventFeatureEven
         StatementInterface $statement,
         ResultInterface $result
     ): void {
-        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setEvent(Event::PostInsert);
         $this->tableGatewayEvent->setParams([
             'statement' => $statement,
             'result'    => $result,
@@ -140,7 +140,7 @@ class EventDispatcherFeature extends AbstractFeature implements EventFeatureEven
      */
     public function preUpdate(Update $update): void
     {
-        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setEvent(Event::PreUpdate);
         $this->tableGatewayEvent->setParams(['update' => $update]);
         $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
@@ -156,7 +156,7 @@ class EventDispatcherFeature extends AbstractFeature implements EventFeatureEven
         StatementInterface $statement,
         ResultInterface $result
     ): void {
-        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setEvent(Event::PostUpdate);
         $this->tableGatewayEvent->setParams([
             'statement' => $statement,
             'result'    => $result,
@@ -172,7 +172,7 @@ class EventDispatcherFeature extends AbstractFeature implements EventFeatureEven
      */
     public function preDelete(Delete $delete): void
     {
-        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setEvent(Event::PreDelete);
         $this->tableGatewayEvent->setParams(['delete' => $delete]);
         $this->eventDispatcher->dispatch($this->tableGatewayEvent);
     }
@@ -188,7 +188,7 @@ class EventDispatcherFeature extends AbstractFeature implements EventFeatureEven
         StatementInterface $statement,
         ResultInterface $result
     ): void {
-        $this->tableGatewayEvent->setName(__METHOD__);
+        $this->tableGatewayEvent->setEvent(Event::PostDelete);
         $this->tableGatewayEvent->setParams([
             'statement' => $statement,
             'result'    => $result,
