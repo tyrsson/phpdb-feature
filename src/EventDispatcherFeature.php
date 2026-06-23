@@ -29,7 +29,7 @@ class EventDispatcherFeature extends AbstractFeature implements
      *
      * @return EventDispatcherInterface
      */
-    public function getEventDispatcher()
+    public function getEventDispatcher(): ?EventDispatcherInterface
     {
         return $this->eventDispatcher;
     }
