@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webware\Feature\RelatedTable\Exception;
+namespace Webware\PhpDb\Feature\RelatedTable\Exception;
 
 use InvalidArgumentException;
 
