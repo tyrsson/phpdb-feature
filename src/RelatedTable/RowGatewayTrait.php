@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webware\Feature\RelatedTable;
+namespace Webware\PhpDb\Feature\RelatedTable;
 
 trait RowGatewayTrait
 {
@@ -20,7 +20,7 @@ trait RowGatewayTrait
                 $fkValue = $this->primaryKeyData[$columnMap['local']];
             }
             $method .= \ucfirst($columnMap['fk']);
-            $data[] = $map['dependent_table']->{$method}($fkValue);
+            $data[] = $map['dependent_table']->$method($fkValue);
         }
         $this->offsetSet('dependentRows', $data);
         return $data;
