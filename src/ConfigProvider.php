@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webware\Feature;
+namespace Webware\PhpDb\Feature;
 
 final class ConfigProvider
 {
@@ -25,13 +25,6 @@ final class ConfigProvider
      */
     public function getDependencies(): array
     {
-        return [
-            'aliases' => [
-                FeatureManager::class => FeatureManagerFactory::class,
-            ],
-            'factories' => [
-                FeatureManagerFactory::class => FeatureManagerFactory::class,
-            ],
-        ];
+        return [];
     }
 }
